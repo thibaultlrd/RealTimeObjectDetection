@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Data/Models
+models/
+*.tflite
+*.onnx
+*.pt
+*.bin
+*.pb
+res/
+
+# Logs
+logs/
+*.log
+
+# Streamlit
+.streamlit/
+
+# Docker
+*.tar
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+test_outputs/
+
+# OS
+.DS_Store
+Thumbs.db
