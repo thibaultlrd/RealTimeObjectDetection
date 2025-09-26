@@ -11,7 +11,7 @@ from rtod.utils.logging_setup import logger
 
 app = FastAPI(title="RealTimeObjectDetection")
 
-MODEL_PATH = str(Path("rtod/models/yolov8n_saved_model") / "yolov8n_float32.tflite")
+MODEL_PATH = str(Path("rtod/models") / "yolov8n.tflite")
 
 if not Path(MODEL_PATH).exists():
 	raise FileNotFoundError(f"Model file not found: {MODEL_PATH}")
@@ -21,7 +21,8 @@ _detector = TFLiteYoloDetector(model_path=MODEL_PATH)
 
 @app.get("/health")
 async def health() -> dict:
-	return {"status": "ok", "model_path": MODEL_PATH, "input_size": _detector.input_size}
+	input_size = [int(x) for x in _detector.input_size]
+	return {"status": "ok", "model_path": MODEL_PATH, "input_size": input_size}
 
 
 @app.post("/predict")
