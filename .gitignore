@@ -11,8 +11,7 @@ venv/
 .idea/
 
 # Data/Models
-models/
-*.tflite
+# *.tflite
 *.onnx
 *.pt
 *.bin
