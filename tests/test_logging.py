@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.dirname(__file__))
 try:
     # Test the logging setup
     from rtod.utils.logging_setup import logger
-    import numpy as np
     
     print("Testing logging configuration...")
     

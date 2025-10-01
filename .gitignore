@@ -33,6 +33,7 @@ logs/
 .coverage
 htmlcov/
 test_outputs/
+rtod/utils/runs/*
 
 # OS
 .DS_Store

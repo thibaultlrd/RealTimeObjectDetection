@@ -1,0 +1,67 @@
+Add live demo
+
+Deploy backend + frontend somewhere accessible (for example: Google Cloud Run for backend, Streamlit Cloud or Vercel/Netlify for frontend).
+
+Put the link in the README (“Demo: …”).
+
+Maybe include a short video or GIF in the README showing it in action (webcam + detections).
+
+Benchmarking
+
+Measure FPS (frames per second) for different input sizes / hardware (e.g. laptop CPU, GPU, Raspberry Pi if possible).
+
+Record inference latency & variance.
+
+Configuration options & flexibility
+
+Allow switching models via config (maybe allow YOLO vs SSD vs TFLite model).
+
+Confidence threshold, input resolution as parameters.
+
+Better error handling
+
+If model file missing, invalid image format, backend unavailable, etc.
+
+Friendly error messages.
+
+Logging + Monitoring
+
+Logs for requests / failures.
+
+Possibly metrics endpoints (e.g. via Prometheus) for inference times / request counts.
+
+Add more tests
+
+Unit + integration.
+
+Test frontend behavior (maybe mock calls to backend).
+
+More polished UI features
+
+Confidence slider.
+
+Visual overlay of bounding boxes.
+
+Toggle features.
+
+If possible, livestream via webcam.
+
+Code quality
+
+Ensure consistent code style, linting.
+
+Add more comments / docstrings / read some code coverage report.
+
+Documentation
+
+Add a “Design Decisions” section: why TFLite, why that model, why threshold values.
+
+Limitations section.
+
+Extend functionality
+
+Could add object tracking (so bounding boxes keep persistent IDs over frames).
+
+Could add ability to run on video file besides webcam.
+
+Maybe support detecting model drift or allow adding “custom classes” via fine-tuning.
