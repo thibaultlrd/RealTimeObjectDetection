@@ -16,7 +16,6 @@ venv/
 *.pt
 *.bin
 *.pb
-res/
 
 # Logs
 logs/
