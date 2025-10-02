@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rtod-backend
+  namespace: rtod
+spec:
+  selector:
+    app: rtod-backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rtod-frontend
+  namespace: rtod
+spec:
+  selector:
+    app: rtod-frontend
+  ports:
+    - port: 8501
+      targetPort: 8501
+      protocol: TCP
+      name: http
+  type: ClusterIP
+

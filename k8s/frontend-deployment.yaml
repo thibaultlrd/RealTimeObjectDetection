@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtod-frontend
+  namespace: rtod
+  labels:
+    app: rtod-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rtod-frontend
+  template:
+    metadata:
+      labels:
+        app: rtod-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: rtod-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8501
+          env:
+            - name: BACKEND_URL
+              value: http://rtod-backend.rtod.svc.cluster.local:8000
+            - name: STREAMLIT_SERVER_HEADLESS
+              value: "true"
+            - name: STREAMLIT_SERVER_ENABLE_CORS
+              value: "false"
+            - name: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
+              value: "false"
+            - name: STREAMLIT_SERVER_ENABLE_WEBSOCKET_COMPRESSION
+              value: "false"
+            - name: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+              value: "false"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8501
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8501
+            initialDelaySeconds: 45
+            periodSeconds: 20
+

@@ -11,6 +11,10 @@ from rtod.utils.logging_setup import logger
 
 app = FastAPI(title="RealTimeObjectDetection")
 
+# Create API router
+from fastapi import APIRouter
+api_router = APIRouter(prefix="/api")
+
 MODEL_PATH = str(Path("rtod/models") / "yolov8n.tflite")
 
 if not Path(MODEL_PATH).exists():
@@ -19,13 +23,13 @@ if not Path(MODEL_PATH).exists():
 _detector = TFLiteYoloDetector(model_path=MODEL_PATH)
 
 
-@app.get("/health")
+@api_router.get("/health")
 async def health() -> dict:
 	input_size = [int(x) for x in _detector.input_size]
 	return {"status": "ok", "model_path": MODEL_PATH, "input_size": input_size}
 
 
-@app.post("/predict")
+@api_router.post("/predict")
 async def predict(image: UploadFile = File(...)) -> JSONResponse:
 	logger.info(f"Received prediction request for image: {image.filename}")
 	data = await image.read()
@@ -52,3 +56,6 @@ async def predict(image: UploadFile = File(...)) -> JSONResponse:
 		for det in dets
 	]
 	return JSONResponse(content={"detections": resp})
+
+# Include the API router
+app.include_router(api_router)
