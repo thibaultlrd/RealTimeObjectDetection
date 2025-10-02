@@ -3,7 +3,7 @@ from typing import List
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, APIRouter
 from fastapi.responses import JSONResponse
 
 from rtod.models import TFLiteYoloDetector, Detection
@@ -12,7 +12,6 @@ from rtod.utils.logging_setup import logger
 app = FastAPI(title="RealTimeObjectDetection")
 
 # Create API router
-from fastapi import APIRouter
 api_router = APIRouter(prefix="/api")
 
 MODEL_PATH = str(Path("rtod/models") / "yolov8n.tflite")
