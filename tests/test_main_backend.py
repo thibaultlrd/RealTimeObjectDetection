@@ -53,8 +53,8 @@ class TestMainBackend:
         assert "RealTimeObjectDetection" in response.text
     
     def test_health_endpoint_structure(self, client):
-        """Test /health endpoint structure (from main.py lines 22-24)"""
-        response = client.get("/health")
+        """Test /api/health endpoint structure (from main.py lines 25-28)"""
+        response = client.get("/api/health")
         
         if response.status_code == 200:
             data = response.json()
@@ -76,8 +76,8 @@ class TestMainBackend:
             # This is acceptable in testing environment
     
     def test_predict_endpoint_no_file(self, client):
-        """Test /predict endpoint without image file (main.py line 28)"""
-        response = client.post("/predict")
+        """Test /api/predict endpoint without image file (main.py line 31)"""
+        response = client.post("/api/predict")
         
         # Should return 422 for missing required field
         assert response.status_code == 422
@@ -91,12 +91,12 @@ class TestMainBackend:
         print("✅ Predict endpoint correctly validates required image parameter")
     
     def test_predict_endpoint_invalid_image(self, client):
-        """Test /predict endpoint with invalid image data"""
-        # This tests the cv2.imdecode logic in main.py lines 31-35
+        """Test /api/predict endpoint with invalid image data"""
+        # This tests the cv2.imdecode logic in main.py lines 36-39
         invalid_data = b"not an image file"
         
         response = client.post(
-            "/predict",
+            "/api/predict",
             files={"image": ("invalid.jpg", io.BytesIO(invalid_data), "image/jpeg")}
         )
         
@@ -109,13 +109,13 @@ class TestMainBackend:
         print("✅ Predict endpoint correctly rejects invalid images")
     
     def test_predict_endpoint_valid_image(self, client):
-        """Test /predict endpoint with valid image"""
-        # This tests the full prediction pipeline in main.py lines 28-53
+        """Test /api/predict endpoint with valid image"""
+        # This tests the full prediction pipeline in main.py lines 31-57
         test_img = self.create_test_image()
         img_bytes = self.encode_image_as_jpeg(test_img)
         
         response = client.post(
-            "/predict",
+            "/api/predict",
             files={"image": ("test.jpg", io.BytesIO(img_bytes), "image/jpeg")}
         )
         
@@ -151,7 +151,7 @@ class TestMainBackend:
         print(f"✅ Predict endpoint working correctly, found {len(data['detections'])} detections")
     
     def test_predict_endpoint_with_real_image(self, client):
-        """Test /predict endpoint with real test image if available"""
+        """Test /api/predict endpoint with real test image if available"""
         test_image_path = Path("res/dog_test_picture.jpg")
         
         if not test_image_path.exists():
@@ -165,7 +165,7 @@ class TestMainBackend:
         img_bytes = self.encode_image_as_jpeg(img)
         
         response = client.post(
-            "/predict",
+            "/api/predict",
             files={"image": ("dog_test.jpg", io.BytesIO(img_bytes), "image/jpeg")}
         )
         
@@ -207,11 +207,11 @@ class TestMainBackend:
         
         # Check that our endpoints are documented
         paths = schema["paths"]
-        assert "/health" in paths
-        assert "/predict" in paths
+        assert "/api/health" in paths
+        assert "/api/predict" in paths
         
         # Verify the predict endpoint expects a file upload
-        predict_post = paths["/predict"]["post"]
+        predict_post = paths["/api/predict"]["post"]
         assert "requestBody" in predict_post
         
         print("✅ OpenAPI schema properly configured")
