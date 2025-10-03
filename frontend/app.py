@@ -68,10 +68,10 @@ def draw_boxes(image_bgr: np.ndarray, detections: list) -> np.ndarray:
 def detect_objects_async(frame: np.ndarray) -> Optional[List[Dict[str, Any]]]:
 	"""Send frame to backend for detection (non-blocking)"""
 	try:
-		logger.debug(f"Sending request to {BACKEND_URL}/predict")
+		logger.debug(f"Sending request to {BACKEND_URL}/api/predict")
 		_, enc = cv2.imencode('.jpg', frame)
 		resp = requests.post(
-			f"{BACKEND_URL}/predict",
+			f"{BACKEND_URL}/api/predict",
 			files={"image": ('frame.jpg', io.BytesIO(enc.tobytes()), 'image/jpeg')},
 			timeout=5,  # Reduced timeout for real-time
 		)
@@ -152,7 +152,7 @@ def process_static_image(image_to_process: np.ndarray):
 	_, enc = cv2.imencode('.jpg', image_to_process)
 	try:
 		resp = requests.post(
-			f"{BACKEND_URL}/predict",
+			f"{BACKEND_URL}/api/predict",
 			files={"image": ('frame.jpg', io.BytesIO(enc.tobytes()), 'image/jpeg')},
 			timeout=30,
 		)
