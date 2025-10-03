@@ -1,6 +1,6 @@
 # RealTimeObjectDetection
 
-Object detection pipeline that runs inference on webcam/video input in real time with a lightweight model.
+Object detection pipeline that runs inference on webcam/video input in real time with a yolov8 box model.
 
 ## Quickstart (local)
 
@@ -41,9 +41,9 @@ pytest -q
 ## CI
 - GitHub Actions: ruff lint, pytest (mock mode), Docker build for backend and frontend.
 
-## Deployment (free-friendly)
-- Backend: Google Cloud Run (container from `Dockerfile.backend`).
-- Frontend: Streamlit Community Cloud (set secret `backend_url`).
+## Deployment
+- Backend: container from `Dockerfile.backend`.
+- Frontend: container from `Dockerfile.frontend`
 
 ## License
 MIT
