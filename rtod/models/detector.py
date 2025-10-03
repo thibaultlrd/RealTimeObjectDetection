@@ -14,22 +14,8 @@ class Detection:
 	bbox_xyxy: Tuple[int, int, int, int]
 	score: float
 	class_id: int
-	class_name: str = "object"
-
-
-# COCO class names for YOLOv8 models
-COCO_CLASS_NAMES = [
-	"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
-	"traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog",
-	"horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
-	"handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite",
-	"baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle",
-	"wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich",
-	"orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
-	"potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote",
-	"keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book",
-	"clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"
-]
+	class_name: str
+	color: Tuple[int, int, int]
 
 
 class TFLiteYoloDetector:
@@ -287,7 +273,8 @@ class TFLiteYoloDetector:
 				bbox_xyxy=(x1, y1, x2, y2),
 				score=float(score),
 				class_id=class_id,
-				class_name=self.class_names[class_id]
+				class_name=self.class_names[class_id],
+				color=self.color_map[class_id % len(self.color_map)]
 			))
 		
 		# Apply NMS
@@ -301,7 +288,7 @@ class TFLiteYoloDetector:
 		logger.debug(f"Final detections after NMS: {len(detections)}")
 		return detections
 
-	def predict(self, image_bgr: np.ndarray, class_names: Optional[List[str]] = None) -> List[Detection]:
+	def predict(self, image_bgr: np.ndarray) -> List[Detection]:
 		logger.debug(f"Input image shape: {image_bgr.shape}")
 		
 		inp, pad_offsets, scale = self.preprocess(image_bgr)
@@ -313,21 +300,7 @@ class TFLiteYoloDetector:
 		
 		# Use decoding
 		detections = self.decode_yolo_output(outputs, image_bgr.shape[:2], pad_offsets, scale)
-		
-		# Apply class names
-		for det in detections:
-			if class_names and 0 <= det.class_id < len(class_names):
-				det.class_name = class_names[det.class_id]
+
 		
 		logger.info(f"Found {len(detections)} detections")
 		return detections
-
-	def draw_detections(self, image_bgr: np.ndarray, detections: List[Detection]) -> np.ndarray:
-		"""Draw bounding boxes and labels on the image using deterministic colors."""
-		for det in detections:
-			color = self.color_map[det.class_id % len(self.color_map)]
-			x1, y1, x2, y2 = det.bbox_xyxy
-			cv2.rectangle(image_bgr, (x1, y1), (x2, y2), color, 2)
-			label = f"{det.class_name}:{det.score:.2f}"
-			cv2.putText(image_bgr, label, (x1, max(0, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
-		return image_bgr

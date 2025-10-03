@@ -34,13 +34,15 @@ class TestFrontendFunctions:
                 "bbox": [100, 100, 200, 150],
                 "score": 0.85,
                 "class_id": 0,
-                "class_name": "person"
+                "class_name": "person",
+                "color": [255, 0, 0]  # Red
             },
             {
                 "bbox": [250, 200, 350, 300],
                 "score": 0.72,
                 "class_id": 16,
-                "class_name": "dog"
+                "class_name": "dog",
+                "color": [0, 255, 0]  # Green
             }
         ]
     

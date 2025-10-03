@@ -128,11 +128,12 @@ class TestMainBackend:
         
         # Each detection should have the exact fields from main.py
         for detection in data["detections"]:
-            # These correspond to the dict structure in main.py lines 45-51
+            # These correspond to the dict structure in main.py lines 49-56
             assert "bbox" in detection      # det.bbox_xyxy
             assert "score" in detection     # det.score
             assert "class_id" in detection  # det.class_id
             assert "class_name" in detection # det.class_name
+            assert "color" in detection     # det.color
             
             # Validate data types and ranges
             bbox = detection["bbox"]
@@ -147,6 +148,14 @@ class TestMainBackend:
             
             assert isinstance(detection["class_name"], str)
             assert len(detection["class_name"]) > 0
+            
+            # Validate color field
+            color = detection["color"]
+            assert isinstance(color, (list, tuple)), f"Color should be list/tuple, got {type(color)}"
+            assert len(color) == 3, f"Color should have 3 components (RGB), got {len(color)}"
+            for c in color:
+                assert isinstance(c, int), f"Color component should be int, got {type(c)}"
+                assert 0 <= c <= 255, f"Color component should be 0-255, got {c}"
         
         print(f"✅ Predict endpoint working correctly, found {len(data['detections'])} detections")
     

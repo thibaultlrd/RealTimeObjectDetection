@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 
 from rtod.models import TFLiteYoloDetector, Detection
 from rtod.utils.logging_setup import logger
+from rtod.utils.coco_class_names import COCO_CLASS_NAMES
 
 app = FastAPI(title="RealTimeObjectDetection")
 
@@ -19,7 +20,7 @@ MODEL_PATH = str(Path("rtod/models") / "yolov8n.tflite")
 if not Path(MODEL_PATH).exists():
 	raise FileNotFoundError(f"Model file not found: {MODEL_PATH}")
 
-_detector = TFLiteYoloDetector(model_path=MODEL_PATH)
+_detector = TFLiteYoloDetector(model_path=MODEL_PATH, class_names=COCO_CLASS_NAMES)
 
 
 @api_router.get("/health")
@@ -51,6 +52,7 @@ async def predict(image: UploadFile = File(...)) -> JSONResponse:
 			"score": det.score,
 			"class_id": det.class_id,
 			"class_name": det.class_name,
+			"color": det.color,
 		}
 		for det in dets
 	]

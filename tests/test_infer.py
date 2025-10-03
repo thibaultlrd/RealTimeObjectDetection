@@ -25,6 +25,7 @@ def test_detector_outputs_structure():
 		assert hasattr(d, "bbox_xyxy")
 		assert hasattr(d, "score")
 		assert hasattr(d, "class_id")
+		assert hasattr(d, "color")
 
 
 def test_detector_with_test_image():
@@ -49,6 +50,7 @@ def test_detector_with_test_image():
 		assert hasattr(det, "score")
 		assert hasattr(det, "class_id")
 		assert hasattr(det, "class_name")
+		assert hasattr(det, "color")
 		
 		x1, y1, x2, y2 = det.bbox_xyxy
 		h, w = img.shape[:2]
@@ -93,11 +95,13 @@ def test_model_accuracy_and_visualization():
 		print(f"  - Confidence score: {det.score:.3f}")
 		print(f"  - Class ID: {det.class_id}")
 		print(f"  - Class name: {det.class_name}")
+		print(f"  - Color (RGB): {det.color}")
 		
 		assert hasattr(det, "bbox_xyxy"), "Detection missing bbox_xyxy"
 		assert hasattr(det, "score"), "Detection missing score"
 		assert hasattr(det, "class_id"), "Detection missing class_id"
 		assert hasattr(det, "class_name"), "Detection missing class_name"
+		assert hasattr(det, "color"), "Detection missing color"
 		
 		x1, y1, x2, y2 = det.bbox_xyxy
 		h, w = img.shape[:2]
@@ -107,9 +111,21 @@ def test_model_accuracy_and_visualization():
 		assert 0.0 <= det.score <= 1.0, f"Invalid score: {det.score}"
 		
 		assert det.class_id >= 0, f"Invalid class_id: {det.class_id}"
+		
+		# Validate color attribute
+		assert isinstance(det.color, (tuple, list)), f"Color should be tuple/list, got {type(det.color)}"
+		assert len(det.color) == 3, f"Color should have 3 components (RGB), got {len(det.color)}"
+		for c in det.color:
+			assert isinstance(c, int), f"Color component should be int, got {type(c)}"
+			assert 0 <= c <= 255, f"Color component should be 0-255, got {c}"
 	
 	img_with_detections = img.copy()
-	img_with_detections = detector.draw_detections(img_with_detections, detections)
+	# Draw detections manually since detector doesn't have draw_detections method
+	for det in detections:
+		x1, y1, x2, y2 = det.bbox_xyxy
+		cv2.rectangle(img_with_detections, (x1, y1), (x2, y2), det.color, 2)
+		label = f"{det.class_name}:{det.score:.2f}"
+		cv2.putText(img_with_detections, label, (x1, max(0, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, det.color, 1, cv2.LINE_AA)
 	
 	original_output = output_dir / "test_image_original.jpg"
 	annotated_output = output_dir / "test_image_with_detections.jpg"

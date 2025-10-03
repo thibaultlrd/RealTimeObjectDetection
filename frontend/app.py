@@ -59,7 +59,7 @@ def draw_boxes(image_bgr: np.ndarray, detections: list) -> np.ndarray:
 	"""Draw bounding boxes and labels on image"""
 	for det in detections:
 		x1, y1, x2, y2 = det["bbox"]
-		cv2.rectangle(image_bgr, (x1, y1), (x2, y2), (0, 255, 0), 2)
+		cv2.rectangle(image_bgr, (x1, y1), (x2, y2), det["color"], 2)
 		label = f"{det['class_name']}:{det['score']:.2f}"
 		cv2.putText(image_bgr, label, (x1, max(0, y1 - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 	return image_bgr
